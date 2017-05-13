@@ -1,5 +1,5 @@
 
-local RegValueChanged_Time = 2.0 --in ms
+local RegValueChanged_Time = 2.0
 local SplitHexByBytes = false -- Display Hex as 0000 0000
 
 
@@ -20,13 +20,14 @@ local function init()
 
     return {
         name = "RegReader",
-        version = "0.2.0",
+        version = "0.3.0",
         author = "Lemon"
     }
 end
 
 -- Helper function to print on the widget's window
 -- By default it will print on the same line
+-- FUCNTION BY SOLY 
 local function imguiPrint(text, color, newline)
     color = color or cfg.white
     newline = newline or false
@@ -87,13 +88,9 @@ local function IndexToString(i)
     return truncate(i)..s
 end
 
+local function display()
 
-
-local function present()
-    
-    readRegisters()
     imgui.Begin("RegReader")
-
     status, selection = imgui.Combo(" ", selection, DisplayType, 2)
 
     if skipEmptyRegisters then
@@ -118,6 +115,18 @@ local function present()
         i=i+1
     end
     imgui.End()
+end
+
+local function no_display()
+    imgui.End()
+end
+
+
+local function present()
+    imgui.PushStyleColor("WindowBg", 0.0, 0.0, 0.0, 0.1)
+    pcall(readRegisters)
+    xpcall(display,no_display)
+    imgui.PopStyleColor(1)
 end
 
 pso.on_init(init)
