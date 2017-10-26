@@ -10,6 +10,8 @@ local RegTable = {} -- index 0-255 are {Value, TimeOfLastChange}
 local skipEmptyRegisters = true
 local RegAddr = nil
 local DisplayType = {"Hex","Dec"}
+local roomPtr = 0x00A94254
+local roomOffset = 0x28
 
 for i=0,256 do
     RegTable[i] = {0,os.time()+2}
@@ -92,6 +94,13 @@ local function display()
 
     imgui.Begin("RegReader")
     status, selection = imgui.Combo(" ", selection, DisplayType, 2)
+    
+    -- Get room number
+    roomAddr = pso.read_u32(roomPtr)+roomOffset
+    roomNum = pso.read_u32(roomAddr)
+    s = string.format("Room Number: %d", roomNum)
+    imguiPrint(s, Color_Default, true)
+
 
     if skipEmptyRegisters then
         if imgui.Selectable("Show Empty", skipEmptyRegisters) then
